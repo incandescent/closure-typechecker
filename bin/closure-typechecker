@@ -1,18 +1,6 @@
 #!/usr/bin/env node
 
-var args = process.argv,
-    command = 'java',
-    java_args = [
-      '-classpath',
-      __dirname + '/../lib/compiler.jar:' + __dirname + '/../lib/closure-typechecker.jar',
-      'com.incandescent.closure.CheckTypes'
-    ],
-    child;
-
 process.argv.shift(); // shift node
 process.argv.shift(); // shift this script
 
-child = require('child_process').spawn('java', java_args.concat(process.argv));
-
-child.stdout.pipe(process.stdout, { end: false });
-child.stderr.pipe(process.stderr, { end: false });
+require('../index.js').run(process.argv);

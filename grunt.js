@@ -15,12 +15,16 @@ module.exports = function(grunt) {
     },
     clean: {
       out: 'out'
+    },
+    closure_typechecker: {
+      test: {
+        files: "test/*.js"
+      }
     }
   });
 
   grunt.loadNpmTasks('grunt-clean');
   grunt.loadNpmTasks('grunt-exec');
-
-  // grunt.loadTasks('tasks');
+  grunt.loadTasks('tasks');
   grunt.registerTask("default", "clean:out exec:javac exec:jar");
 };

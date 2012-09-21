@@ -16,35 +16,27 @@ module.exports = function(grunt) {
 
   var _ = grunt.utils._;
 
-  grunt.registerMultiTask("closure-typechecker",
+  grunt.registerMultiTask("closure_typechecker",
     "Run Closure compiler typechecking", function() {
 
-    var exec = require('child_process').exec,
-        // Expand files to full paths
+    var args = [];
         files = file.expand(this.data.files),
-        lib = 'lib',
-        command = 'java';
-
-    command = command + ' -classpath ' +
-                lib + '/compiler.jar:' +
-                lib + '/closure-typechecker.jar' +
-                'com.incandescent.closure.CheckTypes';
+        closure_typechecker = require('../index.js'),
+        done = this.async();
 
     if (this.data.includes) {
-      command = command + ' --include "' + this.data.includes + '"';
+      args.push('--include');
+      args.push('"' + this.data.includes + '"');
     }
 
     if (this.data.excludes) {
-      command = command + ' --exclude "' + this.data.excludes + '"';
+      args.push('--excludes');
+      args.push('"' + this.data.excludes+ '"');
     }
 
-    exec(command, function (error, stdout, stderr) {
-        console.log('stdout: ' + stdout);
-        console.log('stderr: ' + stderr);
-        if (error !== null) {
-          console.log('exec error: ' + error);
-        }
-    });
+    args.push(files);
+
+    closure_typechecker.run(args.join(' '));
 
     // Fail task if errors were logged.
     if (grunt.errors) { return false; }
