@@ -15,9 +15,11 @@
  */
 package com.incandescent.closure;
 
+import java.io.PrintStream;
 import java.util.List;
 import java.util.ArrayList;
 
+import com.google.common.base.Preconditions;
 import com.google.javascript.jscomp.*;
 import com.google.javascript.jscomp.Compiler;
 
@@ -64,7 +66,12 @@ public class CheckTypes extends CommandLineRunner {
 
     @Override
     protected Compiler createCompiler() {
-        Compiler compiler = super.createCompiler();
+        Compiler compiler = new Compiler(getErrorPrintStream()) {
+            @Override
+            public String toSource() {
+                return "";
+            }
+        };
         compiler.setErrorManager(new FilteredPrintStreamErrorManager(getErrorPrintStream(), includes, excludes));
         return compiler;
     }
