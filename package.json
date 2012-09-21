@@ -1,0 +1,35 @@
+{
+  "name": "grunt-closure-typechecker",
+  "description": "grunt closure typechecker",
+  "version": "0.0.1",
+  "homepage": "https://github.com/incandescent/closure-typechecker",
+  "author": {
+    "name": "Aaron Hamid (@ahamid)",
+    "email": "aaron@incsw.com",
+    "url": "http://incsw.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/incandescent/closure-typechecker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/incandescent/closure-typechecker/issues"
+  },
+  "dependencies": {
+    "grunt": "latest",
+    "grunt-clean": "latest",
+    "grunt-exec": "latest"
+  },
+  "keywords": [],
+  "engines": {
+    "node": ">=0.6"
+  },
+  "files": [
+    "index.js",
+    "bin",
+    "tasks"
+  ],
+  "bin": "bin/closure-typechecker",
+  "scripts": {
+  }
+}
