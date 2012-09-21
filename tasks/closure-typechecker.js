@@ -19,21 +19,30 @@ module.exports = function(grunt) {
   grunt.registerMultiTask("closure_typechecker",
     "Run Closure compiler typechecking", function() {
 
-    var args = [];
+    var args = [],
         files = file.expand(this.data.files),
         includes = this.data.includes || this.data.include,
         excludes = this.data.excludes || this.data.exclude,
         closure_typechecker = require('../index.js'),
-        done = this.async();
+        done = this.async(),
+        a;
 
     if (includes) {
-      args.push('--report-include');
-      args.push(includes);
+      a = [];
+      a.push(includes);
+      _.each(_.flatten(a), function(regex) {
+        args.push('--report-include');
+        args.push(regex);
+      });
     }
 
     if (excludes) {
-      args.push('--report-exclude');
-      args.push(excludes);
+      a = [];
+      a.push(excludes);
+      _.each(_.flatten(a), function(regex) {
+        args.push('--report-exclude');
+        args.push(regex);
+      });
     }
 
     Array.prototype.push.apply(args, files);
