@@ -16,6 +16,7 @@
 package com.incandescent.closure;
 
 import java.io.PrintStream;
+import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -30,10 +31,16 @@ public class CheckTypes extends CommandLineRunner {
     protected static String[] excludes;
 
     // treat non-flag options as js source files
+    // ex: a.js b.js c.js
+    // ex: --some-flag2 1 --some-flag2 2 -- a.js b.js c.js
     static String[] parseCommandLine(String[] args) {
-        List<String> newArgs = new ArrayList<String>(args.length);
+        boolean dashdashEncountered = false;
+        List<String> beforeDashDash = new ArrayList<String>();
+        List<String> afterDashDash = new ArrayList<String>();
+
         List<String> inc = new ArrayList<String>();
         List<String> exc = new ArrayList<String>();
+
         int i = 0;
         while (i < args.length) {
             String arg = args[i];
@@ -47,14 +54,35 @@ public class CheckTypes extends CommandLineRunner {
                 String regex = ANY + args[i] + ANY;
                 System.err.println("Excluding from report: " + regex);
                 exc.add(regex);
-            } else if (arg.startsWith("-")) {
-                newArgs.add(arg);
+            } else if ("--".equals(arg)) {
+                dashdashEncountered = true;
             } else {
-                newArgs.add("--js");
-                newArgs.add(arg);
+                if (dashdashEncountered) {
+                    afterDashDash.add(arg);
+                } else {
+                    beforeDashDash.add(arg);
+                }
             }
             i++;
         }
+
+        List<String> files;
+        List<String> flags;
+        if (dashdashEncountered) {
+            flags = beforeDashDash;
+            files = afterDashDash;
+        } else {
+            flags = Collections.emptyList();
+            files = beforeDashDash;
+        }
+
+        List<String> newArgs = new ArrayList<String>(flags);
+
+        for (String file: files) {
+            newArgs.add("--js");
+            newArgs.add(file);
+        }
+
         includes = inc.toArray(new String[inc.size()]);
         excludes = exc.toArray(new String[exc.size()]);
         return newArgs.toArray(new String[newArgs.size()]);
@@ -80,6 +108,8 @@ public class CheckTypes extends CommandLineRunner {
     protected CompilerOptions createOptions() {
         CompilerOptions options = super.createOptions();
         options.setWarningLevel(DiagnosticGroups.CHECK_TYPES, CheckLevel.ERROR);
+        options.setCheckGlobalNamesLevel(CheckLevel.OFF);
+        //options.setWarningLevel(DiagnosticGroups.UNDEFINED_NAMES, CheckLevel.OFF);
         return options;
     }
 
