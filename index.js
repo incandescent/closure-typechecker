@@ -7,7 +7,6 @@ exports.run = function(args) {
       ],
       child;
 
-  //console.log(args);
   //console.log('java ' + java_args.concat(args).join(' '));
   child = require('child_process').spawn('java', java_args.concat(args));
 

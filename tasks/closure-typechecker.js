@@ -21,22 +21,24 @@ module.exports = function(grunt) {
 
     var args = [];
         files = file.expand(this.data.files),
+        includes = this.data.includes || this.data.include,
+        excludes = this.data.excludes || this.data.exclude,
         closure_typechecker = require('../index.js'),
         done = this.async();
 
-    if (this.data.includes) {
-      args.push('--include');
-      args.push('"' + this.data.includes + '"');
+    if (includes) {
+      args.push('--report-include');
+      args.push(includes);
     }
 
-    if (this.data.excludes) {
-      args.push('--excludes');
-      args.push('"' + this.data.excludes+ '"');
+    if (excludes) {
+      args.push('--report-exclude');
+      args.push(excludes);
     }
 
-    args.push(files);
+    Array.prototype.push.apply(args, files);
 
-    closure_typechecker.run(args.join(' '));
+    closure_typechecker.run(args);
 
     // Fail task if errors were logged.
     if (grunt.errors) { return false; }

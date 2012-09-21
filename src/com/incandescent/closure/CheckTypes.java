@@ -22,6 +22,8 @@ import com.google.javascript.jscomp.*;
 import com.google.javascript.jscomp.Compiler;
 
 public class CheckTypes extends CommandLineRunner {
+    private static final String ANY = ".*";
+
     protected static String[] includes;
     protected static String[] excludes;
 
@@ -35,12 +37,14 @@ public class CheckTypes extends CommandLineRunner {
             String arg = args[i];
             if ("--report-include".equals(arg)) {
                 i++;
-                System.err.println("Including in report: "+ args[i]);
-                inc.add(args[i]);
+                String regex = ANY + args[i] + ANY;
+                System.err.println("Including in report: " + regex);
+                inc.add(regex);
             } else if ("--report-exclude".equals(arg)) {
                 i++;
-                System.err.println("Excluding from report: "+ args[i]);
-                exc.add(args[i]);
+                String regex = ANY + args[i] + ANY;
+                System.err.println("Excluding from report: " + regex);
+                exc.add(regex);
             } else if (arg.startsWith("-")) {
                 newArgs.add(arg);
             } else {
@@ -57,7 +61,6 @@ public class CheckTypes extends CommandLineRunner {
     CheckTypes(String[] args) {
         super(parseCommandLine(args));
     }
-
 
     @Override
     protected Compiler createCompiler() {
