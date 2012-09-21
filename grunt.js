@@ -18,8 +18,8 @@ module.exports = function(grunt) {
     },
     closure_typechecker: {
       test: {
-        files: "test/*.js",
-        exclude: "vendor\.js"
+        files: [ "test/*.js", "test/vendor/*.js" ],
+        exclude: "vendor/.*\.js"
       }
     }
   });

@@ -1,3 +1,8 @@
-var goats = [];
+var goats = [], test, deferred;
+
 NUMBERWANG = 123 / goats;
-var test = numberWang("not a number");
+test = numberWang("not a number");
+
+deferred = $.Deferred();
+
+deferred.resolveWith('done');
