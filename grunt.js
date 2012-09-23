@@ -19,7 +19,7 @@ module.exports = function(grunt) {
     closure_typechecker: {
       test: {
         files: [ "test/vendor/*.js", "test/*.js" ],
-        exclude: "vendor/.*\.js"
+        report_exclude: "vendor/.*\.js"
       }
     }
   });

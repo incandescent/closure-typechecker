@@ -21,8 +21,8 @@ module.exports = function(grunt) {
 
     var args = [],
         files = file.expand(this.data.files),
-        includes = this.data.includes || this.data.include,
-        excludes = this.data.excludes || this.data.exclude,
+        includes = this.data.report_includes || this.data.report_include,
+        excludes = this.data.report_excludes || this.data.report_exclude,
         closure_typechecker = require('../index.js'),
         done = this.async(),
         a;
