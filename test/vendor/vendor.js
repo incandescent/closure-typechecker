@@ -14,3 +14,13 @@ function staticError() {
 }
 
 $.Deferred.prototype.resolveWith = function() { };
+
+Vendor = {}
+
+(function(Vendor) {
+  /**
+   * @constructor
+   */
+  Vendor.VendorType: function() {};
+  Vendor.VendorType.prototype.doSomeThing = function() {};
+})(Vendor);
