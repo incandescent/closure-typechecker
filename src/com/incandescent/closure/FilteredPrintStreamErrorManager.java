@@ -18,8 +18,12 @@ package com.incandescent.closure;
 import com.google.javascript.jscomp.CheckLevel;
 import com.google.javascript.jscomp.JSError;
 import com.google.javascript.jscomp.PrintStreamErrorManager;
+import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.Token;
+import com.google.javascript.rhino.jstype.UnknownType;
 
 import java.io.PrintStream;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -31,6 +35,8 @@ import java.util.regex.Pattern;
 public class FilteredPrintStreamErrorManager extends PrintStreamErrorManager {
     protected List<Pattern> includePatterns = new ArrayList<Pattern>();
     protected List<Pattern> excludePatterns = new ArrayList<Pattern>();
+
+    public List<Node> propErrors = new ArrayList<Node>();
 
     public FilteredPrintStreamErrorManager(PrintStream stream, String[] include, String[] exclude) {
         super(stream);
@@ -55,16 +61,31 @@ public class FilteredPrintStreamErrorManager extends PrintStreamErrorManager {
 
     @Override
     public void report(CheckLevel level, JSError error) {
-        if (includePatterns.size() > 0) {
-            if (!match(includePatterns, error.sourceName)) {
-                return;
+        if (error.sourceName != null) {
+            if (includePatterns.size() > 0) {
+                if (!match(includePatterns, error.sourceName)) {
+                    return;
+                }
+            }
+            if (excludePatterns.size() > 0) {
+                if (match(excludePatterns, error.sourceName)) {
+                    return;
+                }
             }
         }
-        if (excludePatterns.size() > 0) {
-            if (match(excludePatterns, error.sourceName)) {
-                return;
+
+        /*try {
+            Field f = JSError.class.getDeclaredField("node");
+            f.setAccessible(true);
+            Node node = (Node) f.get(error);
+            if (node.getType() == Token.GETPROP) {
+                propErrors.add(node);
+
             }
-        }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
+
         super.report(level, error);
     }
 }

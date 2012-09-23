@@ -12,3 +12,5 @@ function numberWang(foo) {
 function staticError() {
   numberWang(undefined);
 }
+
+$.Deferred.prototype.resolveWith = function() { };

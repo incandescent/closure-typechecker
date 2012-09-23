@@ -15,6 +15,7 @@
  */
 package com.incandescent.closure;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +24,8 @@ import java.util.ArrayList;
 import com.google.common.base.Preconditions;
 import com.google.javascript.jscomp.*;
 import com.google.javascript.jscomp.Compiler;
+import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.Token;
 
 public class CheckTypes extends CommandLineRunner {
     private static final String ANY = ".*";
@@ -72,11 +75,17 @@ public class CheckTypes extends CommandLineRunner {
             flags = beforeDashDash;
             files = afterDashDash;
         } else {
-            flags = Collections.emptyList();
+            flags = new ArrayList<String>();
             files = beforeDashDash;
         }
 
+        flags.add("--jscomp_off");
+        flags.add("missingProperties");
+        flags.add("--compilation_level");
+        flags.add("ADVANCED_OPTIMIZATIONS");
         List<String> newArgs = new ArrayList<String>(flags);
+        //beforeDashDash.add("--jscomp_error");
+        //beforeDashDash.add("checkTypes");
 
         for (String file: files) {
             newArgs.add("--js");
@@ -88,28 +97,131 @@ public class CheckTypes extends CommandLineRunner {
         return newArgs.toArray(new String[newArgs.size()]);
     }
 
+    FilteredPrintStreamErrorManager errorManager;
+    Compiler compiler;
+
     CheckTypes(String[] args) {
         super(parseCommandLine(args));
+        this.errorManager = new FilteredPrintStreamErrorManager(getErrorPrintStream(), includes, excludes);
     }
 
     @Override
     protected Compiler createCompiler() {
-        Compiler compiler = new Compiler(getErrorPrintStream()) {
-            @Override
-            public String toSource() {
-                return "";
-            }
-        };
-        compiler.setErrorManager(new FilteredPrintStreamErrorManager(getErrorPrintStream(), includes, excludes));
-        return compiler;
+        if (this.compiler == null) {
+            this.compiler = new Compiler(getErrorPrintStream()) {
+                @Override
+                public String toSource() {
+                    return "";
+                }
+            };
+            this.compiler.setErrorManager(errorManager);
+        }
+        return this.compiler;
     }
+
+//    protected void findRValueSource(SymbolTable st, Node symbol) {
+//        System.err.println(symbol);
+//        if (symbol.isName()) {
+//            try {
+//                SymbolTable.Symbol s = st.getEnclosingScope(symbol).getOwnSlot(symbol.getString());
+//
+//                // iterate over all references to the symbol
+//                for (SymbolTable.Reference ref: st.getReferences(s)) {
+//
+//                    // inspect assignments
+//                    Node parent = ref.getNode().getParent();
+//
+//                    if (parent != null && parent.isAssign()) {
+//                        Node assignment = ref.getNode().getParent();
+//                        System.err.println("ASSIGNMENT: " + assignment);
+//                        int len = assignment.getChildCount();
+//                        for (int i = 0; i < len; i++) {
+//                            System.err.println("\t" + assignment.getChildAtIndex(i));
+//                        }
+//
+//                        Node assigned = assignment.getLastChild();
+//
+//                        if (assigned.isGetProp()) {
+//                            SymbolTable.SymbolScope scope = st.getGlobalScope();
+//                            SymbolTable.Symbol sc = null;
+//                            Node curNode = assigned;
+//
+//                            while (curNode.isGetProp()) {
+//                                System.err.println(curNode);
+//                                Node left = curNode.getFirstChild();
+//                                Node right = curNode.getLastChild();
+//                                System.err.println(left);
+//                                System.err.println(right);
+//                                System.err.println(scope);
+//                                sc = scope.getOwnSlot(left.getString());
+//                                System.err.println(sc);
+//                                scope = sc.getPropertyScope();
+//                                curNode = right;
+//                            }
+//
+//                            System.err.println(scope); // property scope is null
+//                            System.err.println(curNode.toString());
+//                            System.err.println(scope.getOwnSlot(curNode.toString())); // npe
+//
+//                            System.err.println(st.getGlobalScope().getOwnSlot("$"));
+//                            System.err.println(st.getGlobalScope().getOwnSlot("$").getPropertyScope());
+//                            //System.err.println(st.getScope(st.getGlobalScope().getOwnSlot("$")));
+//                            for (SymbolTable.Symbol sy: st.getAllSymbols()) {
+//                                String sn = sy.getName();
+//                                if ("window".equals(sn)) {
+//                                    System.err.println(sy.getPropertyScope());
+//                                    System.err.println(sy.getDeclaration());
+//                                    System.err.println(st.getScope(sy));
+//                                }
+//                                if ("$".equals(sn)) {
+//                                    System.err.println(sy.getPropertyScope());
+//                                    System.err.println(sy.getDeclaration());
+//                                    System.err.println(st.getScope(sy));
+//                                }
+//                            }
+//                            //.getOwnSlot("Deferred"));
+//
+//                            System.err.println(scope);
+//                            System.err.println(sc);
+//                        } else if (assigned.isCall()) {
+//                            Node assignedName = assigned.getLastChild().getFirstChild();
+//                            System.err.println(assignedName);
+//                            SymbolTable.Symbol assignedSymbol = st.getEnclosingScope(assignedName).getOwnSlot(assignedName.getString());
+//                            System.err.println(assignedSymbol);
+//                        }
+//                    }
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
+//
+//    protected int doRun() throws FlagUsageException, IOException {
+//        int result = super.doRun();
+//        SymbolTable st = compiler.buildKnownSymbolTable();
+//        System.err.println(errorManager.propErrors.size());
+//        for (Node n: errorManager.propErrors) {
+//            // get the symbol that is being assigned to
+//            findRValueSource(st, n.getFirstChild());
+//        }
+//        return result;
+//    }
 
     @Override
     protected CompilerOptions createOptions() {
         CompilerOptions options = super.createOptions();
         options.setWarningLevel(DiagnosticGroups.CHECK_TYPES, CheckLevel.ERROR);
-        options.setCheckGlobalNamesLevel(CheckLevel.OFF);
+        //options.setCheckGlobalNamesLevel(CheckLevel.OFF);
         //options.setWarningLevel(DiagnosticGroups.UNDEFINED_NAMES, CheckLevel.OFF);
+        //options.setWarningLevel(DiagnosticGroups.UNKNOWN_DEFINES, CheckLevel.OFF);
+        //options.setWarningLevel(DiagnosticGroups.MISSING_PROPERTIES, CheckLevel.OFF);
+        //options.setWarningLevel(DiagnosticGroup.forType(DiagnosticType.disabled(
+        //                                                "JSC_INEXISTENT_PROPERTY",
+        //                                                "Property {0} never defined on {1}")), CheckLevel.OFF);
+        options.setWarningLevel(DiagnosticGroup.forType(DiagnosticType.disabled(
+                "JSC_NOT_A_CONSTRUCTOR",
+                "cannot instantiate non-constructor")), CheckLevel.OFF);
         return options;
     }
 
