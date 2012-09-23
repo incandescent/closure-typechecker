@@ -36,8 +36,6 @@ public class FilteredPrintStreamErrorManager extends PrintStreamErrorManager {
     protected List<Pattern> includePatterns = new ArrayList<Pattern>();
     protected List<Pattern> excludePatterns = new ArrayList<Pattern>();
 
-    public List<Node> propErrors = new ArrayList<Node>();
-
     public FilteredPrintStreamErrorManager(PrintStream stream, String[] include, String[] exclude) {
         super(stream);
         addRegexes(include, includePatterns);
@@ -73,18 +71,6 @@ public class FilteredPrintStreamErrorManager extends PrintStreamErrorManager {
                 }
             }
         }
-
-        /*try {
-            Field f = JSError.class.getDeclaredField("node");
-            f.setAccessible(true);
-            Node node = (Node) f.get(error);
-            if (node.getType() == Token.GETPROP) {
-                propErrors.add(node);
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
 
         super.report(level, error);
     }
