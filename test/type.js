@@ -1,6 +1,3 @@
-/**
- * @typedef {Object}
- */
 namespace = {}
 
 /** @constructor */
