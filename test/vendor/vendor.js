@@ -13,14 +13,18 @@ function staticError() {
   numberWang(undefined);
 }
 
-$.Deferred.prototype.resolveWith = function() { };
+//$.Deferred.prototype.resolveWith = function() { };
 
-Vendor = {}
+Vendor = {};
+
+///**
+// * @constructor 
+// */
+//Vendor.VendorType = function() {};
 
 (function(Vendor) {
   /**
    * @constructor
    */
-  Vendor.VendorType: function() {};
-  Vendor.VendorType.prototype.doSomeThing = function() {};
+  Vendor.VendorType = function() {};
 })(Vendor);

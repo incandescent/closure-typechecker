@@ -74,7 +74,8 @@ public class CheckTypes extends CommandLineRunner {
         flags.add("--jscomp_off");
         flags.add("missingProperties");
         flags.add("--compilation_level");
-        flags.add("ADVANCED_OPTIMIZATIONS");
+        //flags.add("ADVANCED_OPTIMIZATIONS");
+        flags.add("SIMPLE_OPTIMIZATIONS");
         //beforeDashDash.add("--jscomp_error");
         //beforeDashDash.add("checkTypes");
 
