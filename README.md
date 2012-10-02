@@ -2,7 +2,7 @@
 
 Grunt multi-task for running closure-compiler for typechecking (non-Closure) javascript source
 
-This task is useful for typechecking functions under certain code organizations thath Closure Compiler understands.
+This task is useful for type-checking (function signatures, classes, structural types, etc.) under certain code organizations that Closure Compiler understands.
 Unfortunately, Closure Compiler does not understand the IIFE idiom, which is currently hamstringing use as a general javascript type checker.
 Please vote for these issues if you are interested in seeing Closure Compiler typechecking support working in browser-targeted source:
 
@@ -28,14 +28,16 @@ grunt.loadNpmTasks('grunt-closure-typechecker');
 
 ## Config
 - closure_typechecker
-  - <config name>
+  - config name
     - files: Grunt-expanded list of file patterns to analyze
     - report_exclude: Grunt-expanded list of file patterns to exclude from report (e.g. vendor and packaged files)
 
 ```javascript
 'closure_typechecker' : {
-  app: ['app/js/**/*.js'],
-  report_exclude: ['app/js/vendor', 'app/js/release']
+  app: {
+    files: ['app/js/**/*.js'],
+    report_exclude: ['app/js/vendor', 'app/js/release']
+  }
 }
 ```
 
