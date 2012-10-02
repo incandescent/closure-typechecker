@@ -81,5 +81,6 @@ required: Object
 
 ## License
 Copyright (c) 2012 Incandescent Software LLC
-Licensed under the MIT license.
+Licensed under Apache License Version 2.0
+See LICENSE
 
