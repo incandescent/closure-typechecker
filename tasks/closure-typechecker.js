@@ -14,7 +14,7 @@ module.exports = function(grunt) {
   var log = grunt.log;
   var config = grunt.config;
 
-  var _ = grunt.utils._;
+  var _ = grunt.util._;
 
   grunt.registerMultiTask("closure_typechecker",
     "Run Closure compiler typechecking", function() {
