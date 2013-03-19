@@ -77,10 +77,11 @@ required: Object
 
 ## Release History
 
+* v0.0.2: added support for grunt ~0.4
 * v0.0.1: initial "release" updated in place since nobody is using this yet ;)
 
 ## License
-Copyright (c) 2012 Incandescent Software LLC
+Copyright (c) 2013 Incandescent Software LLC
 Licensed under Apache License Version 2.0
 See LICENSE
 
