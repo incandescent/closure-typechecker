@@ -1,7 +1,7 @@
 {
   "name": "grunt-closure-typechecker",
   "description": "grunt closure typechecker",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "homepage": "https://github.com/incandescent/closure-typechecker",
   "author": {
     "name": "Aaron Hamid (@ahamid)",
@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "grunt": "latest",
-    "grunt-clean": "latest",
+    "grunt-contrib-clean": "latest",
     "grunt-exec": "latest"
   },
   "keywords": [],

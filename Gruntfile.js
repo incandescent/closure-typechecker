@@ -18,7 +18,7 @@ module.exports = function(grunt) {
     },
     closure_typechecker: {
       test: {
-        files: [ "test/vendor/*.js", "test/test.js" ],
+        files: { src: [ "test/vendor/*.js", "test/test.js" ] },
         report_exclude: "vendor/.*\.js"
       },
       type_test: {
@@ -27,11 +27,11 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.loadNpmTasks('grunt-clean');
+  grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-exec');
   grunt.loadTasks('tasks');
-  grunt.registerTask("build", "clean:out exec:javac exec:jar");
+  grunt.registerTask("build", ["clean:out", "exec:javac", "exec:jar"]);
   grunt.registerTask("test", "closure_typechecker:test");
   grunt.registerTask("typetest", "closure_typechecker:type_test");
-  grunt.registerTask("default", "build test");
+  grunt.registerTask("default", ["build", "test"]);
 };

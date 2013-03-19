@@ -20,7 +20,7 @@ module.exports = function(grunt) {
     "Run Closure compiler typechecking", function() {
 
     var args = [],
-        files = file.expand(this.data.files),
+        files = file.expand(this.data.files.src),
         includes = this.data.report_includes || this.data.report_include,
         excludes = this.data.report_excludes || this.data.report_exclude,
         closure_typechecker = require('../index.js'),
