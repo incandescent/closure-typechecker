@@ -35,7 +35,7 @@ grunt.loadNpmTasks('grunt-closure-typechecker');
 ```javascript
 'closure_typechecker' : {
   app: {
-    files: ['app/js/**/*.js'],
+    files: { src: ['app/js/**/*.js'] },
     report_exclude: ['app/js/vendor', 'app/js/release']
   }
 }
