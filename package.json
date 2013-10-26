@@ -16,11 +16,15 @@
     "url": "https://github.com/incandescent/closure-typechecker/issues"
   },
   "dependencies": {
-    "grunt": "latest",
-    "grunt-contrib-clean": "latest",
-    "grunt-exec": "latest"
+    "grunt": "*",
+    "grunt-contrib-clean": "*",
+    "grunt-exec": "*"
   },
-  "keywords": [],
+  "keywords": [
+    "gruntplugin",
+    "closure",
+    "typechecker"
+  ],
   "engines": {
     "node": ">=0.6"
   },
@@ -32,5 +36,9 @@
   ],
   "bin": "bin/closure-typechecker",
   "scripts": {
-  }
+  },
+  "licenses": [{
+    "type": "Apache 2.0",
+    "url": "https://raw.github.com/incandescent/closure-typechecker/master/LICENSE"
+  }]
 }
